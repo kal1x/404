@@ -12,3 +12,6 @@
 
 - https://ilovexjp.pages.dev/
   - jkb dddd
+
+- https://miwifi.dev/ssh
+  - 小米路由器 SSH password calculator
