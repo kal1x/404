@@ -6,4 +6,10 @@
 - [Fuzzing101](https://github.com/antonio-morales/Fuzzing101) 做了 exercise 1、2
 
 
-## 第二周 
+## 第二周 （2022.11.14-2022.11.20）
+
+- CUCTF 比赛服务器搭建与运维保障
+  - ![](img/cuctf.png)
+- [学习 jwt 的绕过方法](../安全/WEB安全/JWT绕过.md)
+- 没有什么结果的挖洞
+
